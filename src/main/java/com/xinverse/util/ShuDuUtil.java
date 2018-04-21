@@ -21,7 +21,8 @@ public class ShuDuUtil {
     private static int size = 0;
 
     /**
-     * 表示81个空格，带有横坐标和纵坐标两个属性
+     * 表示数独中所有的81个空格，带有横坐标x和纵坐标y两个属性
+     * 实际用到的是size个，取决于数独盘中未填的数量
      * 原点在左上角，x正向为下，代表某一行；y正向为右，代表某一列
      */
     private static xy space[] = new xy[81];
@@ -30,6 +31,12 @@ public class ShuDuUtil {
         for (int i = 0; i < 81; i++) space[i] = new xy();
     }
 
+    /**
+     * 尝试填入一个数字后，会把数组h、l、c中的对应数据改成非0，表示val已经不可用
+     * @param x 第x行
+     * @param y 第y列
+     * @param val 数据val已填，删除val的可用性
+     */
     private static void delete(int x, int y, int val) {
         int x0 = x / 3, y0 = y / 3;
         c[x0 * 3 + y0][val]++;
@@ -37,6 +44,12 @@ public class ShuDuUtil {
         l[y][val]++;
     }
 
+    /**
+     * 回溯法的必要部分，当前情况不满足要求时，进行回溯，对delete的内容进行unDelete，返回过去的情况，并作出不同选择
+     * @param x 第x行
+     * @param y 第y列
+     * @param val 复活val的可用性，以便下面填入其他数据
+     */
     private static void unDelete(int x, int y, int val) {
         int x0 = x / 3, y0 = y / 3;
         c[x0 * 3 + y0][val] = 0;
@@ -44,6 +57,13 @@ public class ShuDuUtil {
         l[y][val] = 0;
     }
 
+    /**
+     * 对初始数独盘进行检查，如果初始数独盘就是无解的，在多次调用的过程中将会返回false
+     * @param x 第x行
+     * @param y 第y列
+     * @param val 数据val初始已存在，删除val的可用性
+     * @return false表示数独的数据冲突，无解；true表示暂无数据冲突
+     */
     private static boolean deleteCheck(int x, int y, int val) {
         int x0 = x / 3, y0 = y / 3;
         if (++c[x0 * 3 + y0][val] > 1) return false;
@@ -52,6 +72,10 @@ public class ShuDuUtil {
         return true;
     }
 
+    /**
+     * 测试debug过程中使用
+     * @param a 待打印的数组
+     */
     private static void print(Integer a[][]) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -62,6 +86,11 @@ public class ShuDuUtil {
         System.out.println();
     }
 
+    /**
+     * dfs深度优先遍历，使用回溯法，本数独算法的核心
+     * @param t 表示size中的第t个待填入数据的空格
+     * @return 返回值表示是否有解
+     */
     private static boolean dfs(int t) {
         if (t == size) {
             return true;
@@ -81,6 +110,10 @@ public class ShuDuUtil {
         return false;
     }
 
+    /**
+     * 初始化函数
+     * @return 表示传入的数独是否明显无解（有冲突数据）
+     */
     private static boolean init() {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 10; j++) {
@@ -107,20 +140,26 @@ public class ShuDuUtil {
     }
 
 
+    /**
+     * 对外可调用的接口
+     * @param origin 表示被传入的原始数独题
+     * @return 无解返回null，有解返回解数组
+     */
     public static Integer[][] solve(Integer[][] origin) {
         pan = origin;
-//        System.out.println("origin is ");
-//        print(origin);
         if (!init()) {
             return null;
         }
         if (!dfs(0)) {
             System.out.println("无解！！！");
             return null;
-        } //else print(pan);
+        }
         return pan;
     }
 
+    /**
+     * 辅助内部类，表示坐标
+     */
     private static class xy {
         int x, y;
 
