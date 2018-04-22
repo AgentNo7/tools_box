@@ -16,6 +16,10 @@
             font-size: 20px;
             text-align: center;
         }
+
+        a{
+            font-size: 30px;
+        }
     </style>
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.js"></script>
@@ -205,8 +209,14 @@
         <input type="button" id="button" name="button" value="计算">
     </form>
 
+    <hr width="80%" color="#005566" align="center">
+
+    <h3>其他工具</h3>
+    <br>
+
+    <a href="encode.jsp">MD5/(SHA-1,SHA-256)加密</a><br>
+    <a href="uuid.jsp">UUID生成</a><br>
 </div>
 
-<hr width="80%" color="#005566" align="center">
 </body>
 </html>
